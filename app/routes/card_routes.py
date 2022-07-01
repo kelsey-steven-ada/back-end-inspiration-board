@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, jsonify, make_response
 from app.models.card import Card
-from .routes_helper import make_class_safely, get_record_by_id
+from .routes_helper import get_record_by_id
 from app import db
 
 bp = Blueprint("cards", __name__, url_prefix="/cards")
@@ -25,3 +25,13 @@ def increase_card_like_count(card_id):
     db.session.commit()
 
     return jsonify(card.to_dict())
+
+@bp.route("/<card_id>", methods=["DELETE"])
+def delete_card_by_id(card_id):
+    card = get_record_by_id(card_id)
+    
+    db.session.delete(card)
+    db.session.commit()
+
+    msg = f"Card with id {card_id} successfully deleted!"
+    return make_response(msg)

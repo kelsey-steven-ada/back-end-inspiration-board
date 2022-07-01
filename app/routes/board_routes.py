@@ -40,3 +40,13 @@ def add_card_to_board(board_id):
     db.session.commit()
 
     return jsonify(new_card.to_dict()), 201
+
+@bp.route("/<board_id>", methods=["DELETE"])
+def delete_card_by_id(board_id):
+    board = get_record_by_id(board_id)
+    
+    db.session.delete(board)
+    db.session.commit()
+
+    msg = f"Board with id {board_id} successfully deleted!"
+    return make_response(msg)
